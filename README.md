@@ -1,6 +1,7 @@
 
 # EMP
-_Empirical Client_
+_Empirical Client_ [![Circle CI](https://circleci.com/gh/alantrrs/emp.svg?style=svg&circle-token=cd5663fe04e7c0ed40a7a1d33a66d2431763a3d5)](https://circleci.com/gh/alantrrs/emp)
+---
 
 **emp** is a client that connects to  **empiricalci.com** to automate running experiments in your computer
 
