@@ -114,6 +114,7 @@ describe('EMP:', function () {
     it.skip('validates experiment config')
     it.skip('builds image')
     it.skip('runs experiment')
+    it('should be able to consume data from /data')
   })
   it.skip('logs')
   after(function (done) {
