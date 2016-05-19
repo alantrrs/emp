@@ -18,11 +18,13 @@ var worker = require('./lib/worker')
 var args = process.argv
 
 if (args.length > 2) {
-  var git_repo = args[args.length - 1]
-  emp.runTask({
-    cli_mode: true,
-    ssh_url: git_repo
-  })
+  console.log(args)
+  var experiment_name = args[2]
+  // TODO: Copy code directory
+  // TODO: Read experiment config
+  // TODO: Build docker Image
+  // TODO: Get dataset
+  // TODO: Run experiment
 } else {
   worker.consumeTasks().catch(emp.handleError)
 }
