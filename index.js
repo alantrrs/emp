@@ -18,7 +18,6 @@ var worker = require('./lib/worker')
 var args = process.argv
 
 if (args.length > 2) {
-  console.log(args)
   const code_dir = '/empirical/code'
   // Read experiment config
   var experiment_name = args[2]
