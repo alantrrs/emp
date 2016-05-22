@@ -5,13 +5,10 @@ var assert = require('assert')
 var fs = require('fs')
 
 // Test data
-var builds = require('../node_modules/fixtures/builds.json')
-var test_standalone = builds[4]
-test_standalone.full_name = `${test_standalone.project_owner}/${test_standalone.project_name}:${test_standalone.label}`
-var test_solver = builds[0]
-test_solver.full_name = `${test_solver.project_owner}/${test_solver.project_name}:${test_solver.label}`
-var test_evaluator = builds[3]
-test_evaluator.full_name = `${test_evaluator.project_owner}/${test_evaluator.project_name}:${test_evaluator.label}`
+const test_standalone = {_id: '56fe1f7d4cd9176e48b5541f'}
+const standalone_with_data = {_id: '573c1a1be041df2d00d5b96e'}
+const test_solver = {_id: '56fe381a90031e0005d15ed8', full_name: 'empirical-bot/my-solver:VJsNP7PCe'}
+const test_evaluator = {_id: '5719d236fe781303004ecea9'}
 
 describe('Library', function () {
   var emp = require('../lib')
@@ -80,9 +77,9 @@ describe('Server dependant tests', function () {
         done()
       }).catch(done)
     })
-    it('should project keys', function (done) {
+    it('should get project keys', function (done) {
       this.timeout(5000)
-      client.getKeys(test_solver.project_owner, test_solver.project_name).then(function (res) {
+      client.getKeys('empirical-bot/my-solver').then(function (res) {
         assert(res.public_key)
         assert(res.private_key)
         done()
@@ -93,13 +90,20 @@ describe('Server dependant tests', function () {
   describe('runTask', function () {
     this.timeout(30000)
     var emp = require('../lib')
-    // TODO: Change auth
-    it.skip('should run a standalone experiment', function (done) {
+    emp.client.setAuth(
+      '56fa1e9c444d666624705d15',
+      '9b01c60c-56de-4ff2-8604-802c99f11d72'
+    )
+    it('should run a standalone experiment', function (done) {
       emp.runTask(test_standalone).then(function () {
         done()
       }).catch(done)
     })
-    it('should run a standalone experiment with data')
+    it('should run a standalone experiment with data', function (done) {
+      emp.runTask(standalone_with_data).then(function () {
+        done()
+      }).catch(done)
+    })
     it('should run a standalone experiment with output to workspace')
     it('should run an evaluator', function (done) {
       emp.runTask(test_evaluator).then(function () {
