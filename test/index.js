@@ -41,6 +41,7 @@ describe('Library', function () {
   it('should get a datset')
   describe('runExperiment', function () {
     it('should run a sandalone experiment', function (done) {
+      this.timeout(300000)
       emp.runExperiment({
         _id: 'some_id',
         type: 'standalone',
