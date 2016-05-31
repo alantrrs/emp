@@ -89,7 +89,7 @@ describe('Server dependant tests', function () {
   })
 
   describe('runTask', function () {
-    this.timeout(30000)
+    this.timeout(300000)
     var emp = require('../lib')
     emp.client.setAuth(
       '56fa1e9c444d666624705d15',
