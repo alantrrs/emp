@@ -17,6 +17,8 @@ services:
       - EMPIRICAL_API_URI=http://$LOCALTUNNEL.tunnel.empiricalci.com
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/data:/empirical/data
+      - /tmp/workspaces:/empirical/workspaces
     network_mode: 'host'
     depends_on:
       - empirical
