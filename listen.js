@@ -16,7 +16,7 @@ var pusher = new Pusher(config.pusher.key, {
   }
 })
 
-const channel = `private-${config.client.key}-tasks`
+const channel = `private-${config.client.key}@tasks`
 var tasks_channel = pusher.subscribe(channel)
 
 // Queue
