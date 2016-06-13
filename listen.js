@@ -17,7 +17,7 @@ var pusher = new Pusher(config.pusher.key, {
 })
 
 pusher.connection.bind('error', function (err) {
-  console.log('Connection error')
+  console.log('Connection error:', err)
   process.exit(1)
 })
 
@@ -40,7 +40,7 @@ tasks_channel.bind('new-task', function (task) {
 })
 
 // Consume
-function consume() {
+function consume () {
   var task = queue.shift()
   if (task) {
     debug('Running task: %o', task)
