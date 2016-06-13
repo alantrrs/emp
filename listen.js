@@ -16,8 +16,20 @@ var pusher = new Pusher(config.pusher.key, {
   }
 })
 
+pusher.connection.bind('error', function (err) {
+  console.log('Connection error')
+  process.exit(1)
+})
+
 const channel = `private-${config.client.key}@tasks`
 var tasks_channel = pusher.subscribe(channel)
+
+tasks_channel.bind('pusher:subscription_error', function (status) {
+  if (status === 403) {
+    console.log('There is already another worker connected with these credentials.')
+    process.exit(1)
+  }
+})
 
 // Queue
 var queue = []
