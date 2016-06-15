@@ -2,6 +2,7 @@
 var emp = require('./lib')
 var worker = require('./lib/worker')
 var prettyjson = require('prettyjson')
+var colors = require('colors/safe')
 
 // TODO: Print help
 // if emp [ params ] [ directory  ]
@@ -15,23 +16,27 @@ var prettyjson = require('prettyjson')
 
 var args = process.argv
 
+function logSection (section) {
+  console.log(colors.white.bold(section))
+}
+
 if (args.length > 2) {
   const code_dir = '/empirical/code'
   // Read experiment config
   var experiment_name = args[2]
-  console.log('EXPERIMENT:')
+  logSection('EXPERIMENT:')
   var experiment = emp.readExperimentConfig(code_dir, {
     name: experiment_name
   })
   console.log(prettyjson.render(experiment))
   // Build docker Image
-  console.log('BUILD:')
+  logSection('BUILD:')
   emp.buildImage(experiment.environment, code_dir, function (data) {
     process.stdout.write(data)
   })
   // Get dataset
   .then(function () {
-    console.log('DATASET:')
+    logSection('DATASET:')
     return emp.getDataset(code_dir, experiment.dataset).then(function (data) {
       if (!data) console.log('No dataset provided')
       console.log(prettyjson.render(data))
@@ -39,13 +44,13 @@ if (args.length > 2) {
   })
   // Run experiment
   .then(function () {
-    console.log('RUN:')
+    logSection('RUN:')
     return emp.runExperiment(experiment)
   }).then(function () {
-    console.log('SUCCESS!')
+    logSection('SUCCESS!')
   }).catch(function (err) {
     console.log(err)
-    console.log('EXPERIMENT FAILED!')
+    logSection('EXPERIMENT FAILED!')
   })
 } else {
   worker.consumeTasks().catch(emp.handleError)
