@@ -21,39 +21,56 @@ pusher.connection.bind('error', function (err) {
   process.exit(1)
 })
 
-const channel = `private-${config.client.key}@tasks`
-var tasks_channel = pusher.subscribe(channel)
+function subscribeTo (channel_name) {
+  return new Promise(function (resolve, reject) {
+    var channel = pusher.subscribe(channel_name)
+    channel.bind('pusher:subscription_succeeded', function () {
+      resolve(channel)
+    })
+    channel.bind('pusher:subscription_error', function (status) {
+      reject(new Error(status))
+    })
+  })
+}
 
-tasks_channel.bind('pusher:subscription_error', function (status) {
-  if (status === 403) {
-    console.log('There is already another worker connected with these credentials.')
-    process.exit(1)
+// TODO: Replace with log-pusher
+function logger (channel) {
+  return function (str) {
+    channel.trigger('client-log', str)
   }
-})
-
-// Queue
-var queue = []
-console.log('EMP is listening for tasks on channel:', channel)
-tasks_channel.bind('new-task', function (task) {
-  debug('Received task: %o', task)
-  queue.push(task)
-})
+}
 
 // Consume
 function consume () {
   var task = queue.shift()
   if (task) {
     debug('Running task: %o', task)
-    return emp.runTask(task).then(function () {
-      console.log('SUCCESS')
-      consume()
-    }).catch(function (err) {
-      console.log('ERROR: ', err)
-      consume()
+    const logs_channel = `private-${task.full_name.replace(/\//g, '-')}@logs`
+    return subscribeTo(logs_channel)
+    .then(function (channel) {
+      return emp.runTask(task, logger(channel)).then(function () {
+        console.log('SUCCESS')
+        consume()
+      }).catch(function (err) {
+        console.log('ERROR: ', err.message)
+        consume()
+      })
     })
   } else {
     setTimeout(consume, 1000)
   }
 }
 
-consume()
+// Queue
+var queue = []
+const tasks_channel = `private-${config.client.key}@tasks`
+subscribeTo(tasks_channel).then(function (channel) {
+  console.log('EMP is listening for tasks on channel:', tasks_channel)
+  channel.bind('new-task', function (task) {
+    debug('Received task: %o', task)
+    queue.push(task)
+  })
+  consume()
+}).catch(function (err) {
+  console.log(err)
+})
