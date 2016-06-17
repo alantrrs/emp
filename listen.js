@@ -33,10 +33,19 @@ function subscribeTo (channel_name) {
   })
 }
 
-// TODO: Replace with log-pusher
+var PubNub = require('pubnub')
+
+var pubnub = PubNub.init({
+  publish_key: 'pub-c-813b2f6d-059e-42b4-a939-cc465c6c9bba',
+  subscribe_key: 'sub-c-ed11a4da-3447-11e6-9edb-02ee2ddab7fe'
+})
+
 function logger (channel) {
-  return function (str) {
-    channel.trigger('client-log', str)
+  return function (log) {
+    pubnub.publish({
+      channel: 'my_channel',
+      message: log
+    })
   }
 }
 
@@ -45,16 +54,13 @@ function consume () {
   var task = queue.shift()
   if (task) {
     debug('Running task: %o', task)
-    const logs_channel = `private-${task.full_name.replace(/\//g, '-')}@logs`
-    return subscribeTo(logs_channel)
-    .then(function (channel) {
-      return emp.runTask(task, logger(channel)).then(function () {
-        console.log('SUCCESS')
-        consume()
-      }).catch(function (err) {
-        console.log('ERROR: ', err.message)
-        consume()
-      })
+    const logs_channel = `${task.full_name}-logs`
+    return emp.runTask(task, logger(logs_channel)).then(function () {
+      console.log('SUCCESS')
+      consume()
+    }).catch(function (err) {
+      console.log('ERROR: ', err.message)
+      consume()
     })
   } else {
     setTimeout(consume, 1000)
