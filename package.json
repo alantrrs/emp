@@ -23,7 +23,6 @@
   "dependencies": {
     "amqplib": "^0.4.0",
     "colors": "^1.1.2",
-    "pusher-js": "^3.1.0",
     "atob": "^2.0.3",
     "dataset-cache": "^1.0.0",
     "debug": "^2.2.0",
