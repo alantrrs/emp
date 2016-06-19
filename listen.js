@@ -25,7 +25,11 @@ function authPubNub (channel) {
       'Authorization': 'Basic ' + auth
     }
   }).then(function (response) {
-    if (!response.ok) return Promise.reject(response.status)
+    if (!response.ok) {
+      return response.text().then(function (body) {
+        return Promise.reject(body)
+      })
+    }
     return response.json()
   })
 }
@@ -53,13 +57,17 @@ function consume () {
 // Queue
 var queue = []
 function listen () {
-  const tasks_channel = `${config.client.key}/tasks`
-  authPubNub(tasks_channel).then(function (data) {
+  const tasks_channel = `${config.client.key}@tasks`
+  authPubNub(`${config.client.key}/tasks`).then(function (data) {
     // Init pubnub
     pubnub = PubNub.init(data)
     // Listen
     pubnub.subscribe({
+      heartbeat: 10,
       channel: tasks_channel,
+      error: function (err) {
+        console.log('Error subscribing to channel:', err)
+      },
       message: function (task) {
         debug('Received task: %o', task)
         queue.push(task)
