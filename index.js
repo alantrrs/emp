@@ -20,6 +20,10 @@ function logSection (section) {
   console.log(colors.white.bold(section))
 }
 
+function logHandler (line) {
+  console.log(line)
+}
+
 if (args.length > 2) {
   const code_dir = '/empirical/code'
   // Read experiment config
@@ -45,12 +49,16 @@ if (args.length > 2) {
   // Run experiment
   .then(function () {
     logSection('RUN:')
-    return emp.runExperiment(experiment)
+    return emp.runExperiment(experiment, logHandler)
   }).then(function () {
-    logSection('SUCCESS!')
+    logSection('RESULTS:')
+    return emp.getResults(experiment).then(function (results) {
+      console.log(prettyjson.render(results))
+      console.log(colors.green.bold('Success'))
+    })
   }).catch(function (err) {
     console.log(err)
-    logSection('EXPERIMENT FAILED!')
+    console.log(colors.red.bold('Failed'))
   })
 } else {
   worker.consumeTasks().catch(emp.handleError)
