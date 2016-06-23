@@ -21,7 +21,7 @@ function logSection (section) {
 }
 
 function logHandler (line) {
-  console.log(line)
+  process.stdout.write(line)
 }
 
 if (args.length > 2) {
