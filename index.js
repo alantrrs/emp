@@ -52,8 +52,8 @@ if (args.length > 2) {
     return emp.runExperiment(experiment, logHandler)
   }).then(function () {
     logSection('RESULTS:')
-    return emp.getResults(experiment).then(function (results) {
-      console.log(prettyjson.render(results))
+    return emp.getResults(experiment).then(function (overall) {
+      console.log(prettyjson.render({overall: overall}))
       console.log(colors.green.bold('Success'))
     })
   }).catch(function (err) {
