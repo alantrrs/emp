@@ -20,7 +20,7 @@ function logger (channel) {
 // Auth
 const auth = new Buffer(`${config.client.key}:${config.client.secret}`).toString('base64')
 function authPubNub (channel) {
-  channel = channel.replace('@','/')
+  channel = channel.replace('@', '/')
   return fetch(`${config.client.root}/api/auth/${channel}`, {
     headers: {
       'Authorization': 'Basic ' + auth
