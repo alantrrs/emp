@@ -64,7 +64,8 @@ function run (experiment_name) {
 
 function pull (url) {
   http.get({
-    host: 'broylyjyvp.localtunnel.me',
+    host: '192.168.99.100',
+    port: 5000,
     path: '/api/x/' + url
   }, function (res) {
     var body = ''
@@ -73,7 +74,7 @@ function pull (url) {
     })
     res.on('end', function () {
       var parsed = JSON.parse(body)
-      emp.runTask(parsed, logHandler).then(function () {
+      emp.pullTaskAndRun(parsed, logHandler).then(function () {
         console.log('Yei')
       }, function () {
         console.log('error')
