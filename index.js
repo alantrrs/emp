@@ -3,6 +3,7 @@ var emp = require('./lib')
 var prettyjson = require('prettyjson')
 var colors = require('colors/safe')
 var listen = require('./listen')
+var http = require('http')
 
 // TODO: Print help
 // if emp [ params ] [ directory  ]
@@ -61,12 +62,37 @@ function run (experiment_name) {
   })
 }
 
+function pull (url) {
+  http.get({
+    host: 'broylyjyvp.localtunnel.me',
+    path: '/api/x/' + url
+  }, function (res) {
+    var body = ''
+    res.on('data', function (chunk) {
+      body += chunk
+    })
+    res.on('end', function () {
+      var parsed = JSON.parse(body)
+      emp.runTask(parsed, logHandler).then(function () {
+        console.log('Yei')
+      }, function () {
+        console.log('error')
+      })
+    })
+  }).on('error', function (err) {
+    console.log(err)
+  })
+}
+
 switch (args[2]) {
   case 'listen':
     listen()
     break
   case 'run':
     run(args[3])
+    break
+  case 'pull':
+    pull(args[3])
     break
   default:
     console.log('Command not found')
