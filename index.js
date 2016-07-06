@@ -3,7 +3,7 @@ var emp = require('./lib')
 var prettyjson = require('prettyjson')
 var colors = require('colors/safe')
 var listen = require('./listen')
-var http = require('http')
+var fetch = require('node-fetch')
 
 // TODO: Print help
 // if emp [ params ] [ directory  ]
@@ -63,24 +63,18 @@ function run (experiment_name) {
 }
 
 function pull (url) {
-  http.get({
-    host: '192.168.99.100',
-    port: 5000,
-    path: '/api/x/' + url
-  }, function (res) {
-    var body = ''
-    res.on('data', function (chunk) {
-      body += chunk
-    })
-    res.on('end', function () {
-      var parsed = JSON.parse(body)
-      emp.pullTaskAndRun(parsed, logHandler).then(function () {
-        console.log('Yei')
-      }, function () {
-        console.log('error')
+  var host = process.env.EMPIRICAL_API_URI || 'http://empiricalci.com'
+  fetch(`${host}/api/x/${url}`).then(function (res) {
+    return res.json()
+  }).then(function (json) {
+      console.log(json)
+      emp.runTask(json, logHandler).then(function () {
+        console.log(colors.green.bold('Success'))
+      }, function (err) {
+        console.log(err)
+        console.log(colors.red.bold('Failed'))
       })
-    })
-  }).on('error', function (err) {
+  }, function (err) {
     console.log(err)
   })
 }
