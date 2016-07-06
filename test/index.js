@@ -82,6 +82,7 @@ describe('Library', function () {
       }, './test', logHandler).then(function () {
         done(new Error('Build error not caught'))
       }).catch(function (err) {
+        assert(err)
         done()
       })
     })
