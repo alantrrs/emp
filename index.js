@@ -67,13 +67,12 @@ function pull (url) {
   fetch(`${host}/api/x/${url}`).then(function (res) {
     return res.json()
   }).then(function (json) {
-      console.log(json)
-      emp.runTask(json, logHandler).then(function () {
-        console.log(colors.green.bold('Success'))
-      }, function (err) {
-        console.log(err)
-        console.log(colors.red.bold('Failed'))
-      })
+    emp.runTask(json, logHandler).then(function () {
+      console.log(colors.green.bold('Success'))
+    }, function (err) {
+      console.log(err)
+      console.log(colors.red.bold('Failed'))
+    })
   }, function (err) {
     console.log(err)
   })
