@@ -1,7 +1,13 @@
 
+set -e
+
+VERSION="0.1"
+IMAGE="empiricalci/emp:$VERSION"
+
 run(){
   if [ -z "$1" ]; then
-    echo "Usage: emp experiment-name [path to code]"
+    echo "emp run requires at least one argument"
+    echo "Usage: emp run experiment-name [path to code]"
     exit
   fi
   if [ -z "$2" ]; then
@@ -21,7 +27,7 @@ run(){
     -e EMPIRICAL_API_URI=$EMPIRICAL_API_URI \
     -e EMPIRICAL_DIR=$EMPIRICAL_DIR \
     -e DEBUG=$DEBUG \
-    empiricalci/emp run $1
+    $IMAGE run $1
 }
 
 listen(){
@@ -30,11 +36,11 @@ listen(){
     -v $EMPIRICAL_DIR/data:/empirical/data \
     -v $EMPIRICAL_DIR/workspaces:/empirical/workspaces \
     -e EMPIRICAL_API_URI=$EMPIRICAL_API_URI \
-    -e EMPIRICAL_API_KEY=56f21e9c444d700624705d16 \
-    -e EMPIRICAL_API_SECRET=e6bbfb2b-f608-48a8-8a60-c78df6c2bb97 \
+    -e EMPIRICAL_API_KEY=$EMPIRICAL_API_KEY \
+    -e EMPIRICAL_API_SECRET=$EMPIRICAL_API_SECRET \
     -e EMPIRICAL_DIR=$EMPIRICAL_DIR \
     -e DEBUG=$DEBUG \
-    empiricalci/emp listen
+    $IMAGE listen
 }
 
 # CLI
