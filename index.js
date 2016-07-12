@@ -3,6 +3,7 @@ var emp = require('./lib')
 var prettyjson = require('prettyjson')
 var colors = require('colors/safe')
 var listen = require('./listen')
+var fetch = require('node-fetch')
 
 // TODO: Print help
 // if emp [ params ] [ directory  ]
@@ -61,12 +62,31 @@ function run (experiment_name) {
   })
 }
 
+function pull (url) {
+  var host = process.env.EMPIRICAL_API_URI || 'http://empiricalci.com'
+  fetch(`${host}/api/x/${url}`).then(function (res) {
+    return res.json()
+  }).then(function (json) {
+    emp.runTask(json, logHandler).then(function () {
+      console.log(colors.green.bold('Success'))
+    }, function (err) {
+      console.log(err)
+      console.log(colors.red.bold('Failed'))
+    })
+  }, function (err) {
+    console.log(err)
+  })
+}
+
 switch (args[2]) {
   case 'listen':
     listen()
     break
   case 'run':
     run(args[3])
+    break
+  case 'pull':
+    pull(args[3])
     break
   default:
     console.log('Command not found')
