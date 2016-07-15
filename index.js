@@ -3,16 +3,11 @@ var emp = require('./lib')
 var prettyjson = require('prettyjson')
 var colors = require('colors/safe')
 var listen = require('./listen')
+var readline = require('readline')
+var fs = require('fs')
+var path = require('path')
 
 // TODO: Print help
-// if emp [ params ] [ directory  ]
-// emp .
-
-// TODO: Check if it's configured
-// Configure
-// - data path
-// - ssh credentials
-// - tmp sessions path
 
 var args = process.argv
 
@@ -22,6 +17,28 @@ function logSection (section) {
 
 function logHandler (line) {
   process.stdout.write(line)
+}
+
+function configure () {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  })
+  rl.question(`Empirical directory [${process.env.EMPIRICAL_DIR}]: `, function (newDir) {
+    if (newDir) {
+      // TODO: Validate that directory exists?
+      if (path.isAbsolute(newDir)) {
+        // Save new dir
+        fs.writeFileSync('/emp.env', `EMPIRICAL_DIR=${newDir}\n`)
+        console.log('Saved new empirical directory:', newDir)
+      } else {
+        console.log('Error: Please provide an absolute path.')
+      }
+    } else {
+      console.log('Empirical directory not changed')
+    }
+    rl.close()
+  })
 }
 
 function run (experiment_name) {
@@ -67,6 +84,9 @@ switch (args[2]) {
     break
   case 'run':
     run(args[3])
+    break
+  case 'configure':
+    configure()
     break
   default:
     console.log('Command not found')

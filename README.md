@@ -28,7 +28,7 @@ TBD
 
 ### Empirical directory
 Empirical uses a directory to cache all the datasets downloaded and to save any files generated during the
-tests or experiments. You need to set this up:
+tests or experiments. This defaults to ``~/empirical``. You can change this by doing:
 ```
 emp configure
 ```
