@@ -41,7 +41,7 @@ VOLUMES="-v $DOCKER_HOST:/var/run/docker.sock"
 VOLUMES="$VOLUMES -v $EMPIRICAL_DIR/data:/empirical/data"
 VOLUMES="$VOLUMES -v $EMPIRICAL_DIR/workspaces:/empirical/workspaces"
 VOLUMES="$VOLUMES -v $HOME/.emp/emp.env:/emp.env"
-if [ "$EMP_ENV" = "development" ]; then
+if [ "$EMPIRICAL_ENV" = "test" ]; then
   VOLUMES="$VOLUMES -v $(pwd):/emp"
 fi
 
