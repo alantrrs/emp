@@ -1,6 +1,7 @@
 /* eslint-env mocha */
 
 const spawn = require('child_process').spawn
+const exec = require('child_process').exec
 const assert = require('assert')
 // const debug = require('debug')('emp')
 
@@ -28,6 +29,17 @@ describe('emp configure', function () {
     emp.stdout.once('data', handler)
   })
   it('Fails if passed a non-absolute directory')
+})
+
+describe('emp run', function () {
+  it('runs the experiment', function (done) {
+    this.timeout(60000)
+    exec('./bin/run.sh run hello-world node_modules/fixtures/standalone_project', function (err, stdout, stderr) {
+      if (err) return done(err)
+      console.log(stdout)
+      done()
+    })
+  })
 })
 
 // TODO: Test install script

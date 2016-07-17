@@ -164,11 +164,3 @@ describe('Server dependant tests', function () {
   })
 })
 
-describe('CLI', function () {
-  it('should run a standalone experiment')
-  it('should run a standalone experiment with data')
-  it('should run a standalone experiment with output to workspace')
-  it.skip('should build an evaluator')
-  it.skip('should run an evaluato')
-})
-
