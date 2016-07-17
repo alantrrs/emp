@@ -1,3 +1,4 @@
+#!/bin/bash
 
 set -e
 
@@ -40,12 +41,15 @@ VOLUMES="-v $DOCKER_HOST:/var/run/docker.sock"
 VOLUMES="$VOLUMES -v $EMPIRICAL_DIR/data:/empirical/data"
 VOLUMES="$VOLUMES -v $EMPIRICAL_DIR/workspaces:/empirical/workspaces"
 VOLUMES="$VOLUMES -v $HOME/.emp/emp.env:/emp.env"
-if [ "$EMP_ENV" = "development" ]; then
+if [ "$EMPIRICAL_ENV" = "test" ]; then
   VOLUMES="$VOLUMES -v $(pwd):/emp"
 fi
 
 if [ "$1" = "run" ]; then
-  DOCKER_RUN_OPTIONS="-ti"
+  DOCKER_RUN_OPTIONS="-i"
+  if [ "$EMPIRICAL_ENV" != "test" ]; then
+    DOCKER_RUN_OPTIONS="-ti"
+  fi
   if [ -z "$3" ]; then
     echo "emp run requires two arguments"
     echo "Usage: emp run my-experiment /path/to/project"
@@ -58,7 +62,10 @@ if [ "$1" = "run" ]; then
 fi
 
 if [ "$1" = "configure" ];then
-  DOCKER_RUN_OPTIONS="-ti"
+  DOCKER_RUN_OPTIONS="-i"
+  if [ "$EMPIRICAL_ENV" != "test" ]; then
+    DOCKER_RUN_OPTIONS="-ti"
+  fi
 fi
 
 launch $@
