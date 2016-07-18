@@ -46,11 +46,7 @@ if [ "$EMPIRICAL_ENV" = "test" ]; then
 fi
 
 if [ "$1" = "run" ]; then
-  DOCKER_RUN_OPTIONS="-i"
-  if [ "$EMPIRICAL_ENV" != "test" ]; then
-    DOCKER_RUN_OPTIONS="-ti"
-  fi
-  if [ -z "$3" ]; then
+   if [ -z "$3" ]; then
     echo "emp run requires two arguments"
     echo "Usage: emp run my-experiment /path/to/project"
     exit
@@ -61,11 +57,15 @@ if [ "$1" = "run" ]; then
   fi
 fi
 
-if [ "$1" = "configure" ];then
+if [ "$1" = "data" ]; then
+  DATA_FILE=$(readlink -f $2)
+  VOLUMES="$VOLUMES -v $DATA_FILE:/x$DATA_FILE"
+  ENV_VARS="$ENV_VARS -e DATA_FILE=/x$DATA_FILE"
+fi
+
+DOCKER_RUN_OPTIONS="-ti"
+if [ "$EMPIRICAL_ENV" = "test" ]; then
   DOCKER_RUN_OPTIONS="-i"
-  if [ "$EMPIRICAL_ENV" != "test" ]; then
-    DOCKER_RUN_OPTIONS="-ti"
-  fi
 fi
 
 launch $@

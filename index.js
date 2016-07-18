@@ -2,6 +2,7 @@
 var emp = require('./lib')
 var prettyjson = require('prettyjson')
 var colors = require('colors/safe')
+var data = require('./lib/data')
 var listen = require('./listen')
 var readline = require('readline')
 var fs = require('fs')
@@ -87,6 +88,9 @@ switch (args[2]) {
     break
   case 'configure':
     configure()
+    break
+  case 'data':
+    data(args[3])
     break
   default:
     console.log('Command not found')
