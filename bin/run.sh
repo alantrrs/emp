@@ -57,7 +57,7 @@ if [ "$1" = "run" ]; then
   fi
 fi
 
-if [ "$1" = "data" ]; then
+if [ "$1" = "data" ] && [ "$2" = "hash" ]; then
   DATA_FILE=$(readlink -f $3)
   VOLUMES="$VOLUMES -v $DATA_FILE:/x$DATA_FILE"
   ENV_VARS="$ENV_VARS -e DATA_FILE=/x$DATA_FILE"
