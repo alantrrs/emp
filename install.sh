@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 # Download
 DEST=/usr/local/bin/emp
 VERSION=$(curl -s https://api.github.com/repos/empiricalci/emp/tags | grep -Eo '"name":.*?[^\\]",'  | head -n 1 | sed 's/[," ]//g' | cut -d ':' -f 2)
