@@ -18,6 +18,14 @@ launch() {
     $IMAGE "$@"
 }
 
+realpath() {
+  if [[ "$1" == /* ]] || [[ "$1" == .* ]] || [[ "$1" == ~* ]]; then
+    cd "$1"; pwd
+  else
+    echo "$PWD/$1"
+  fi
+}
+
 # Get configuration
 if [ -f "$HOME/.emp/emp.env" ]; then
   source "$HOME/.emp/emp.env"
@@ -37,7 +45,11 @@ if [ -z "$EMPIRICAL_DIR" ]; then
   EMPIRICAL_DIR="$HOME/empirical"
 fi
 
-VOLUMES="-v $DOCKER_HOST:/var/run/docker.sock"
+if [ "$(uname)" == "Darwin" ]; then
+  VOLUMES="-v /var/run/docker.sock:/var/run/docker.sock"
+else
+  VOLUMES="-v $DOCKER_HOST:/var/run/docker.sock"
+fi
 VOLUMES="$VOLUMES -v $EMPIRICAL_DIR/data:/empirical/data"
 VOLUMES="$VOLUMES -v $EMPIRICAL_DIR/workspaces:/empirical/workspaces"
 VOLUMES="$VOLUMES -v $HOME/.emp/emp.env:/emp.env"
@@ -48,14 +60,14 @@ if [ "$1" = "run" ]; then
     echo "Usage: emp run my-experiment /path/to/project"
     exit
   else
-    CODE_DIR=$(readlink -f $3)
+    CODE_DIR=$(realpath $3)
     ENV_VARS="$ENV_VARS -e CODE_DIR=$CODE_DIR"
     VOLUMES="$VOLUMES -v $CODE_DIR:/empirical/code:ro"
   fi
 fi
 
 if [ "$1" = "data" ] && [ "$2" = "hash" ]; then
-  DATA_FILE=$(readlink -f $3)
+  DATA_FILE=$(realpath $3)
   VOLUMES="$VOLUMES -v $DATA_FILE:/x$DATA_FILE"
   ENV_VARS="$ENV_VARS -e DATA_FILE=/x$DATA_FILE"
 fi
