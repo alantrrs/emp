@@ -18,11 +18,9 @@ launch() {
     $IMAGE "$@"
 }
 
-realpath() {
-  if [[ "$1" == /* ]] || [[ "$1" == .* ]] || [[ "$1" == ~* ]]; then
-    cd "$1"; pwd
-  else
-    echo "$PWD/$1"
+absolute_path() {
+  if [ -e "$1" ]; then
+    echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
   fi
 }
 
@@ -60,14 +58,22 @@ if [ "$1" = "run" ]; then
     echo "Usage: emp run my-experiment /path/to/project"
     exit
   else
-    CODE_DIR=$(realpath $3)
+    CODE_DIR=$(absolute_path $3)
+    if [ -z $CODE_DIR ]; then 
+      echo "Path doesn't exists"
+      exit 0
+    fi
     ENV_VARS="$ENV_VARS -e CODE_DIR=$CODE_DIR"
     VOLUMES="$VOLUMES -v $CODE_DIR:/empirical/code:ro"
   fi
 fi
 
 if [ "$1" = "data" ] && [ "$2" = "hash" ]; then
-  DATA_FILE=$(realpath $3)
+  DATA_FILE=$(absolute_path $3)
+  if [ -z $DATA_FILE ]; then 
+    echo "Path doesn't exists"
+    exit 0
+  fi
   VOLUMES="$VOLUMES -v $DATA_FILE:/x$DATA_FILE"
   ENV_VARS="$ENV_VARS -e DATA_FILE=/x$DATA_FILE"
 fi
