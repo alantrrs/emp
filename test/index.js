@@ -65,6 +65,7 @@ describe('initDirs()', function () {
 describe('auth', function () {
   var auth = require('../lib/auth')
   before(function (done) {
+    this.timeout(20000)
     require('./wait-for-it')('http://localhost:1337', done)
   })
   it('.login() should not save credentials when invalid', function (done) {
