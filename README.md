@@ -1,4 +1,6 @@
 # EMP [![Circle CI](https://circleci.com/gh/empiricalci/emp.svg?style=svg)](https://circleci.com/gh/empiricalci/emp)
+
+[![Join the chat at https://gitter.im/empiricalci/emp](https://badges.gitter.im/empiricalci/emp.svg)](https://gitter.im/empiricalci/emp?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 _Empirical Experiment Toolkit_
 
 **emp** is a command line tool that helps you run your experiments
