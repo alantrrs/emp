@@ -69,8 +69,22 @@ describe('emp run', function () {
 })
 
 describe('emp data', function () {
-  it('get url should save and log dataset')
-  it('hash file should log the hash of the file')
+  const test_url = 'https://raw.githubusercontent.com/empiricalci/fixtures/data.csv'
+  const test_hash = '986915f2caa2c8f9538f0b77832adc8abf3357681d4de5ee93a202ebf19bd8b8'
+  it('get url should save and log dataset', function (done) {
+    exec('node index.js data get ' + test_url, function (err, stdout, stderr) {
+      assert.ifError(err)
+      assert(fs.lstatSync('/tmp/emp/data/' + test_hash).isFile())
+      done()
+    })
+  })
+  it('hash file should log the hash of the file', function (done) {
+    exec(`node index.js data hash /tmp/emp/data/${test_hash}`, function (err, stdout, stderr) {
+      assert.ifError(err)
+      assert(stdout.indexOf(test_hash) > -1)
+      done()
+    })
+  })
 })
 
 describe('emp login', function () {
