@@ -68,6 +68,9 @@ describe('./bin/run.sh', function () {
           container = info
         })
       })
+      emp.stdout.on('data', function (data) {
+        debug(data.toString())
+      })
       emp.on('close', function (code) {
         if (code) return done(new Error('Failed'))
         done()
