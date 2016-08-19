@@ -2,6 +2,12 @@ sudo: required
 language: javascript
 services:
   - docker
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - libstdc++-4.9-dev
 before_install:
   - docker version
   - docker login -u $DOCKER_USER -p $DOCKER_PASS
