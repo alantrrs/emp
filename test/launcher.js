@@ -22,9 +22,12 @@ function getContainer (image, cmd, cb) {
     var emp_info = containers.find(function (info) {
       return (info.Image === image && info.Command === cmd)
     })
+    // API 1.24 provides Mounts in the list
+    // but API 1.22 doesn't so we need to inspect
     docker.getContainer(emp_info.Id).inspect(function (err, info) {
       debug('err: %o', err)
       debug('info: %o', info)
+      assert(info.Mounts)
       cb(info)
     })
   })
