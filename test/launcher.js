@@ -8,12 +8,15 @@ const docker = new Docker()
 const env = require('node-env-file')
 const fs = require('fs')
 const setup = require('./setup')
+const debug = require('debug')('emp')
 
 const ENV_FILE = `${process.env.HOME}/.emp/emp.env`
+debug('ENV_FILE: %s', ENV_FILE)
 
 function getContainer (image, cmd, cb) {
   docker.listContainers(function (err, containers) {
     if (err) console.log(err)
+    debug('%o', containers)
     var emp_info = containers.find(function (info) {
       return (info.Image === image && info.Command === cmd)
     })
@@ -48,7 +51,9 @@ describe('./bin/run.sh', function () {
     it('runs and exits successfully', function (done) {
       const emp = spawn('./bin/run.sh', ['run', 'hello-world', code_path])
       emp.stdout.once('data', function (data) {
+        debug(data.toString())
         env(ENV_FILE)
+        debug('EMPIRICAL_DIR:', process.env.EMPIRICAL_DIR)
         getContainer('empiricalci/emp:test', `node index.js run hello-world ${code_path}`, function (info) {
           container = info
         })
