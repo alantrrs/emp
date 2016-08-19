@@ -47,6 +47,7 @@ describe('./bin/run.sh', function () {
   describe('run ARGS', function () {
     this.timeout(20000)
     const code_path = './node_modules/fixtures/standalone_project'
+    const abs_path = path.resolve(process.cwd(), code_path)
     var container
     it('runs and exits successfully', function (done) {
       const emp = spawn('./bin/run.sh', ['run', 'hello-world', code_path])
@@ -54,7 +55,7 @@ describe('./bin/run.sh', function () {
         debug(data.toString())
         env(ENV_FILE)
         debug('EMPIRICAL_DIR:', process.env.EMPIRICAL_DIR)
-        getContainer('empiricalci/emp:test', `node index.js run hello-world ${code_path}`, function (info) {
+        getContainer('empiricalci/emp:test', `node index.js run hello-world ${abs_path}`, function (info) {
           container = info
         })
       })
@@ -89,6 +90,7 @@ describe('./bin/run.sh', function () {
     it('runs and exits successfully', function (done) {
       const emp2 = spawn('./bin/run.sh', ['data', 'get', test_url])
       emp2.stdout.once('data', function (data) {
+        env(ENV_FILE)
         getContainer('empiricalci/emp:test', `node index.js data get ${test_url}`, function (info) {
           container = info
         })
@@ -125,6 +127,7 @@ describe('./bin/run.sh', function () {
       const abs_path = path.resolve(process.cwd(), test_file)
       const emp3 = spawn('./bin/run.sh', ['data', 'hash', test_file])
       emp3.stdout.once('data', function (data) {
+        env(ENV_FILE)
         getContainer('empiricalci/emp:test', `node index.js data hash ${abs_path}`, function (info) {
           container = info
         })

@@ -49,6 +49,8 @@ if [ "$1" = "run" ]; then
       exit 0
     fi
     VOLUMES="$VOLUMES -v $CODE_DIR:$CODE_DIR:ro"
+    # Replaces arg 3 by the new absolute path
+    set -- "${@:1:2}" "$CODE_DIR" "${@:4}"
   fi
 fi
 
