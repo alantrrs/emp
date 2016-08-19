@@ -1,5 +1,5 @@
-# EMP [![Circle CI](https://circleci.com/gh/empiricalci/emp.svg?style=svg)](https://circleci.com/gh/empiricalci/emp)
-_Empirical Experiment Toolkit_
+# EMP [![Build Status](https://travis-ci.org/empiricalci/emp.svg)](https://travis-ci.org/empiricalci/emp)
+_A Package Manager for Empirical Science_
 
 **emp** is a command line tool that helps you run your experiments
 using the [Empirical Framework](http://empiricalci.com/docs/framework)
