@@ -13,6 +13,8 @@ const debug = require('debug')('emp')
 const ENV_FILE = `${process.env.HOME}/.emp/emp.env`
 debug('ENV_FILE: %s', ENV_FILE)
 
+debug('CWD: %s', process.cwd())
+
 function getContainer (image, cmd, cb) {
   docker.listContainers(function (err, containers) {
     if (err) console.log(err)
@@ -20,7 +22,11 @@ function getContainer (image, cmd, cb) {
     var emp_info = containers.find(function (info) {
       return (info.Image === image && info.Command === cmd)
     })
-    cb(emp_info)
+    docker.getContainer(emp_info.Id).inspect(function (err, info) {
+      debug('err: %o', err)
+      debug('info: %o', info)
+      cb(info)
+    })
   })
 }
 
