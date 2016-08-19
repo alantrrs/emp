@@ -4,7 +4,7 @@ services:
   - docker
 before_install:
   - docker version
-  - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+  - docker login -u $DOCKER_USER -p $DOCKER_PASS
 install:
   - npm install
   - docker pull empiricalci/test_standalone
