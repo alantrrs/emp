@@ -10,9 +10,6 @@ launch() {
   docker run $DOCKER_RUN_OPTIONS --rm \
     $VOLUMES \
     -e HOME=$HOME \
-    -e EMPIRICAL_HOST=$EMPIRICAL_HOST \
-    -e EMPIRICAL_AUTH=$EMPIRICAL_AUTH \
-    -e EMPIRICAL_DIR=$EMPIRICAL_DIR \
     -e DEBUG=$DEBUG \
     $IMAGE "$@"
 }
@@ -72,9 +69,7 @@ fi
 # Test environment
 if [ "$EMPIRICAL_ENV" = "test" ]; then
   DOCKER_RUN_OPTIONS="$DOCKER_RUN_OPTIONS --net=host"
-  EMPIRICAL_HOST='http://localhost:5000'
   IMAGE="empiricalci/emp:test"
-  VOLUMES="$VOLUMES -v $(pwd):/emp"
 fi
 
 launch $@
