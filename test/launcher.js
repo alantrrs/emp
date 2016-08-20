@@ -11,9 +11,9 @@ const setup = require('./setup')
 const debug = require('debug')('emp')
 
 const ENV_FILE = `${process.env.HOME}/.emp/emp.env`
-debug('ENV_FILE: %s', ENV_FILE)
-
-debug('CWD: %s', process.cwd())
+console.log('ENV_FILE:', ENV_FILE)
+console.log('CWD:', process.cwd())
+console.log('DEBUG:', process.env.DEBUG)
 
 function getContainer (image, cmd, cb) {
   docker.listContainers(function (err, containers) {
@@ -70,6 +70,9 @@ describe('./bin/run.sh', function () {
       })
       emp.stdout.on('data', function (data) {
         debug(data.toString())
+      })
+      emp.stderr.on('data', function (data) {
+        console.log(data.toString())
       })
       emp.on('close', function (code) {
         if (code) return done(new Error('Failed'))
@@ -139,6 +142,7 @@ describe('./bin/run.sh', function () {
       const abs_path = path.resolve(process.cwd(), test_file)
       const emp3 = spawn('./bin/run.sh', ['data', 'hash', test_file])
       emp3.stdout.once('data', function (data) {
+        assert(data.toString().indexOf(test_hash) > -1, 'hash was not logged')
         env(ENV_FILE)
         getContainer('empiricalci/emp:test', `node index.js data hash ${abs_path}`, function (info) {
           container = info
