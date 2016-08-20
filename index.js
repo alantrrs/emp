@@ -60,7 +60,12 @@ function dataCLI (subcommand, source) {
 function execute (args) {
   switch (args[2]) {
     case 'run':
-      return run(args[3], args[4], logger)
+      return run({
+        protocol: args[3],
+        code_path: args[4],
+        save: args[5] === '--save',
+        project: args[5] === '--save' ? args[args.indexOf('--save') + 1] : undefined
+      }, logger)
     case 'configure':
       return captureDirectory().then(config.updateDir)
     case 'login':

@@ -103,6 +103,8 @@ describe('auth', function () {
   })
 })
 
+var code_dir
+const sha = 'a574f888bdb8f286fd827263794b8aace413dcec'
 describe('gitClone', function () {
   var gitClone = require('../lib/git-clone')
   it('should clone a repo into a temp directory', function (done) {
@@ -112,13 +114,23 @@ describe('gitClone', function () {
       public_key: fs.readFileSync('./node_modules/fixtures/test_keys/test_key.pub', 'utf8'),
       private_key: fs.readFileSync('./node_modules/fixtures/test_keys/test_key', 'utf8')
     }
-    var sha = 'a574f888bdb8f286fd827263794b8aace413dcec'
     gitClone(repo, sha, keys).then(function (codeDir) {
       assert(fs.lstatSync(codeDir).isDirectory())
+      code_dir = codeDir
       done()
     }).catch(done)
   })
-  it('should cleanup code and credentials')
+  it('should cleanup credentials')
+})
+
+describe('gitHeadCommit', function () {
+  var gitHeadCommit = require('../lib/git-head')
+  it('should return the head sha', function (done) {
+    gitHeadCommit(code_dir).then(function (head_sha) {
+      assert.equal(head_sha, sha)
+      done()
+    }).catch(done)
+  })
 })
 
 describe('readProtocol', function () {
@@ -151,7 +163,7 @@ describe('buildImage', function () {
     }).catch(function (err) {
       assert(err)
       done()
-    })
+    }).catch(done)
   })
 })
 
@@ -175,12 +187,20 @@ describe('run()', function () {
   const run = require('../lib/run')
   it('should run an experiment', function (done) {
     this.timeout(60000)
-    run('hello-world', 'node_modules/fixtures/standalone_project', debugLogger)
-    .then(done)
+    run({
+      protocol: 'hello-world',
+      code_path: 'node_modules/fixtures/standalone_project'
+    }, debugLogger)
+    .then(function () {
+      // TODO: Assert stuff
+      done()
+    })
     .catch(done)
   })
   it('should fail if no code path is given', function (done) {
-    run('hello-world', undefined, debugLogger)
+    run({
+      protocol: 'hello-world'
+    }, debugLogger)
     .then(function () {
       done(new Error('Didn\'t throw error without a code path'))
     })
@@ -190,14 +210,17 @@ describe('run()', function () {
     })
   })
   it('should fail if the experiment-name is not found', function (done) {
-    run('something', 'node_modules/fixtures/standalone_project', debugLogger)
+    run({
+      protocol: 'something',
+      code_path: 'node_modules/fixtures/standalone_project'
+    }, debugLogger)
     .then(function () {
-      done(new Error('Experiment not found error wasn\'t caught'))
+      done(new Error('Protocol not found error wasn\'t caught'))
     })
     .catch(function (err) {
-      assert.equal(err.message, `Experiment "something" not found`)
+      assert.equal(err.message, `Protocol "something" not found`)
       done()
-    })
+    }).catch(done)
   })
 })
 
