@@ -8,18 +8,17 @@ machine:
 dependencies:
   override:
     - npm install
-    - curl -L https://github.com/docker/compose/releases/download/1.7.0/docker-compose-`uname -s`-`uname -m` > $(pwd)/docker-compose
-    - chmod +x ./docker-compose
-    - docker login -e $DOCKER_EMAIL_ALT -u $DOCKER_USER_ALT -p $DOCKER_PASS_ALT
+    - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
     - docker pull empiricalci/test_standalone
-    - docker pull empiricalci/empirical
-    - docker pull mongo
-    - ./docker-compose build emp-test
+    - docker run -d -P --name rethink1 rethinkdb
+    - docker run -d -p 1337 --net host --entrypoint=npm empiricalci/empirical run test-server
+    - docker build -t empiricalci/emp:test .
 test:
   override:
-    - ./docker-compose run --no-deps emp-test run lint
-    - ./docker-compose run emp-test run test-cov
+    - npm run lint
+    - npm run test-cov
     - npm run test-cli
+    - npm run test-launcher
 deployment:
   release:
     tag: /v[0-9]+(\.[0-9]+)*/
