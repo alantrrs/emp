@@ -5,6 +5,7 @@ var fs = require('fs')
 var path = require('path')
 var debugLogger = require('./debug-logger')
 var setup = require('./setup')
+var shortid = require('shortid')
 
 const ENV_FILE = path.join(process.env.HOME, '/.emp/emp.env')
 
@@ -103,24 +104,19 @@ describe('auth', function () {
   })
 })
 
+const sha = '27e12070ca9618e1a66884995b6c872e2a15d886'
 var code_dir
-const sha = 'a574f888bdb8f286fd827263794b8aace413dcec'
 describe('gitClone', function () {
   var gitClone = require('../lib/git-clone')
-  it('should clone a repo into a temp directory', function (done) {
+  it('should clone a public repo without a token', function (done) {
     this.timeout(300000)
-    var repo = 'git@github.com:empiricalci/hello-world.git'
-    var keys = {
-      public_key: fs.readFileSync('./node_modules/fixtures/test_keys/test_key.pub', 'utf8'),
-      private_key: fs.readFileSync('./node_modules/fixtures/test_keys/test_key', 'utf8')
-    }
-    gitClone(repo, sha, keys).then(function (codeDir) {
-      assert(fs.lstatSync(codeDir).isDirectory())
-      code_dir = codeDir
+    var repo = 'https://github.com/empiricalci/mnist-sample.git'
+    code_dir = '/tmp/' + shortid.generate()
+    gitClone(repo, code_dir).then(function (repo) {
+      assert(fs.lstatSync(code_dir).isDirectory())
       done()
     }).catch(done)
   })
-  it('should cleanup credentials')
 })
 
 describe('gitHeadCommit', function () {
@@ -221,6 +217,20 @@ describe('run()', function () {
       assert.equal(err.message, `Protocol "something" not found`)
       done()
     }).catch(done)
+  })
+  it.skip('should save an experiment', function (done) {
+    this.timeout(60000)
+    run({
+      protocol: 'mnist',
+      code_path: code_dir,
+      save: true,
+      project: 'empiricalci/mnist-sample'
+    }, debugLogger)
+    .then(function () {
+      // TODO: Assert
+      done()
+    })
+    .catch(done)
   })
 })
 
