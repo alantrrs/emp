@@ -104,7 +104,7 @@ describe('auth', function () {
   })
 })
 
-const sha = '27e12070ca9618e1a66884995b6c872e2a15d886'
+const sha = '25074d4703c3e168044ec58ea743be0ca162eff3'
 var code_dir
 describe('gitClone', function () {
   var gitClone = require('../lib/git-clone')
@@ -177,6 +177,7 @@ describe('runExperiment', function () {
       done()
     }).catch(done)
   })
+  it('should fail if the experiment fails')
 })
 
 describe('run()', function () {
@@ -218,7 +219,7 @@ describe('run()', function () {
       done()
     }).catch(done)
   })
-  it.skip('should save an experiment', function (done) {
+  it('should save an experiment', function (done) {
     this.timeout(60000)
     run({
       protocol: 'mnist',
