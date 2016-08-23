@@ -1,5 +1,5 @@
 {
-  "name": "emp",
+  "name": "empirical-cli",
   "version": "0.1.2",
   "description": "Empirical Package Manager",
   "main": "index.js",
