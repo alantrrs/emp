@@ -1,5 +1,20 @@
-# EMP [![Build Status](https://travis-ci.org/empiricalci/emp.svg)](https://travis-ci.org/empiricalci/emp)
-_A Package Manager for Empirical Science_
+
+<h1 align='center'>
+  <a href='https://empiricalci.com'>
+    <img src='https://cloud.githubusercontent.com/assets/689720/17884275/43072938-68cc-11e6-9131-ca0ffa0afa0a.png'/>
+  </a>
+  <br/>
+  emp
+</h1>
+<p align='center'>
+  <i>A Package Manager for Empirical Science</i><br/><br/>
+  <a href='https://travis-ci.org/empiricalci/emp'>
+    <img src='https://travis-ci.org/empiricalci/emp.svg' alt='build status'/>
+  </a>
+  <a href='https://gitter.im/empiricalci/emp?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge'>
+    <img src='https://badges.gitter.im/empiricalci/emp.svg' alt='gitter'/>
+  </a>
+</p>
 
 **emp** is a command line tool that helps you run and replicate experiments
 using the [Empirical Framework](https://empiricalci.com/docs/framework)
@@ -10,8 +25,7 @@ Docker allows us to create self-contained portable environments that work accros
 - Follow [these instructions](https://docs.docker.com/engine/installation/) to install Docker
 
 ## Install
-
-### Linux & Mac
+There are 2 distribution methods currently supported. They're both compatible with Linux & Mac. Windows support is on the way.
 
 #### Via npm
 If you already have node.js installed in your computer you can install **emp** using ``npm``.
@@ -26,9 +40,6 @@ you can use **emp** as a Docker container, just by installing the launcher:
 curl -s https://raw.githubusercontent.com/empiricalci/emp/master/install.sh | sudo sh
 ```
 
-#### Windows
-TBD
-
 ## Configure
 
 ### Empirical directory
@@ -39,11 +50,11 @@ emp configure
 ```
 
 ## Authenticate with the server
-Authenticating with the Empirical server allows you to save the results of your experiments
-and share them with your peers.
-1. If you haven't done so, sign up with GitHub for an account on [Empirical](http://empiricalci.com)
-2. Set up a password on your [account page](https://empiricalci.com/account)
-3. Login using the CLI: ``emp login`` will ask for your credentials and store them on your computer
+Authenticating with [empiricalci.com](https://empiricalci.com) allows you to save the results of your experiments
+and share them with your peers.  
+1. If you haven't done so, sign up with GitHub for an account on [empiricalci.com](http://empiricalci.com)  
+2. Set up a password on your [account page](https://empiricalci.com/account)  
+3. Login using the CLI: ``emp login`` will ask for your credentials and store them on your computer  
 
 ## Replicate an experiment
 Once authenticated, you can easily replicate an experiment by running:
@@ -86,16 +97,17 @@ To simplify things, when **emp** is run from the code directory and no ``--versi
 **emp** will get the SHA of the current head commit of the code in order to retrieve the version.
 This means that you can run this command right after pushing your commits to GitHub
 without having to look for the commit ``<SHA>``, like this:
-1. ``git push``
-2. ``emp run --save <owner/project/protocol>`
+
+1. Push your changes to GitHub: ``git push``  
+2. From the code directory, run your experiments: ``emp run --save <owner/project/protocol>``
 
 ### Continuous integration mode (NOT IMPLEMENTED YET)
 **NOTE: This mode is still under development** 
 
 In this mode you will be continuosly listening for updates in the GitHub repository.
 Every time that a push is made to the repo, the experiments will automatically run on your 
-computer and save the output to [empiricalci.com](https://empiricalci.com)
-You can run experiments for all protcols in the project:i
+computer and save the output to [empiricalci.com](https://empiricalci.com).
+You can run experiments for all protcols in the project:
 ```
 emp listen <owner/project>
 ```
