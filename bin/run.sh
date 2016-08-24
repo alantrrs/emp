@@ -43,15 +43,22 @@ VOLUMES="$VOLUMES -v $EMPIRICAL_DIR/workspaces:$EMPIRICAL_DIR/workspaces"
 VOLUMES="$VOLUMES -v $EMP_CONF_FILE:$EMP_CONF_FILE"
 
 if [ "$1" = "run" ]; then
-  if [ ! -z "$3" ]; then
-    CODE_DIR=$(absolute_path $3)
+  # Check if version is passed to run
+  for key in "$@"; do
+    case $key in
+      -v|--version)
+        SHA=true
+    esac
+  done
+  if [ -z "$SHA" ]; then
+    CODE_DIR=$(absolute_path "${@: -1}")
     if [ -z $CODE_DIR ]; then 
       echo "Path doesn't exists"
       exit 0
     fi
     VOLUMES="$VOLUMES -v $CODE_DIR:$CODE_DIR:ro"
-    # Replaces arg 3 by the new absolute path
-    set -- "${@:1:2}" "$CODE_DIR" "${@:4}"
+    # Replaces last arg by the new absolute path
+    set -- "${@:1:$(($#-1))}" "$CODE_DIR"
   fi
 fi
 
