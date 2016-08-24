@@ -5,13 +5,16 @@ var fs = require('fs')
 var path = require('path')
 var debugLogger = require('./debug-logger')
 var setup = require('./setup')
-var shortid = require('shortid')
+var rm = require('rimraf')
 
 const ENV_FILE = path.join(process.env.HOME, '/.emp/emp.env')
+const code_dir = '/tmp/mnist-test-project'
 
 before(function (done) {
   process.env.EMPIRICAL_HOST = 'http://localhost:1337'
-  setup.backupConfig(ENV_FILE, done)
+  rm(code_dir, function () {
+    setup.backupConfig(ENV_FILE, done)
+  })
 })
 
 const newDir = '/tmp/empirical'
@@ -105,13 +108,11 @@ describe('auth', function () {
 })
 
 const sha = '25074d4703c3e168044ec58ea743be0ca162eff3'
-var code_dir
 describe('gitClone', function () {
   var gitClone = require('../lib/git-clone')
   it('should clone a public repo without a token', function (done) {
     this.timeout(300000)
     var repo = 'https://github.com/empiricalci/mnist-sample.git'
-    code_dir = '/tmp/' + shortid.generate()
     gitClone(repo, code_dir).then(function (repo) {
       assert(fs.lstatSync(code_dir).isDirectory())
       done()
@@ -224,7 +225,19 @@ describe('run()', function () {
     run({
       protocol: 'mnist',
       code_path: code_dir,
-      save: true,
+      project: 'empiricalci/mnist-sample'
+    }, debugLogger)
+    .then(function () {
+      // TODO: Assert
+      done()
+    })
+    .catch(done)
+  })
+  it('should save an experimnet for a specific version', function (done) {
+    this.timeout(60000)
+    run({
+      protocol: 'mnist',
+      head_sha: '27e12070ca9618e1a66884995b6c872e2a15d886',
       project: 'empiricalci/mnist-sample'
     }, debugLogger)
     .then(function () {

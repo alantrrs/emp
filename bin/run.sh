@@ -9,6 +9,7 @@ IMAGE="empiricalci/emp:$VERSION"
 launch() {
   docker run $DOCKER_RUN_OPTIONS --rm \
     $VOLUMES \
+    $ENV_VARS \
     -e HOME=$HOME \
     -e DEBUG=$DEBUG \
     $IMAGE "$@"
@@ -71,6 +72,7 @@ fi
 # Test environment
 if [ "$EMPIRICAL_ENV" = "test" ]; then
   DOCKER_RUN_OPTIONS="$DOCKER_RUN_OPTIONS --net=host"
+  ENV_VARS="-e EMPIRICAL_HOST=http://localhost:1337"
   IMAGE="empiricalci/emp:test"
 fi
 

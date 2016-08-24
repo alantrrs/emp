@@ -97,6 +97,50 @@ describe('./bin/run.sh', function () {
     })
     it('passes $HOME')
   })
+  describe('login', function () {
+    it('authenticates and saves the credentials', function (done) {
+      const emp = spawn('./bin/run.sh', ['login'])
+      emp.on('close', function (code) {
+        assert.equal(code, 0)
+        done()
+      })
+      emp.stdout.once('data', function (prompt) {
+        emp.stdout.once('data', function (prompt2) {
+          emp.stdin.write('empirical-bot\n')
+          emp.stdout.once('data', function (prompt3) {
+            emp.stdin.write('password\n')
+            emp.stdout.once('data', function (prompt4) {
+              assert.equal(prompt4.toString(), 'Logged in successfully. Credentials stored.\n')
+            })
+          })
+        })
+      })
+    })
+  })
+  describe.skip('emp run --save <owner/project> <protocol> <path>', function (done) {
+    var container
+    const code_path = '/tmp/mnist-test-project'
+    it('runs and saves the experiment for the current version', function (done) {
+      this.timeout(60000)
+      const emp = spawn('./bin/run.sh', ['run', '--save', 'empiricalci/mnist-sample', 'mnist', code_path])
+      emp.stdout.once('data', function (data) {
+        debug(data.toString())
+        env(ENV_FILE)
+        debug('EMPIRICAL_DIR:', process.env.EMPIRICAL_DIR)
+        getContainer('empiricalci/emp:test', `node index.js run --save empiricalci/mnist-sample mnist ${code_path}`, function (info) {
+          container = info
+        })
+      })
+    })
+    it('mounts code directory as read-only', function () {
+      testMount(container, code_path, 'ro')
+    })
+  })
+  describe('emp run --version <SHA> --save <owner/project> <protocol>', function () {
+    it('works')
+    // './bin/run.sh run -v 27e12070ca9618e1a66884995b6c872e2a15d886 -s empiricalci/mnist-sample mnist'
+  })
+
   const test_hash = '986915f2caa2c8f9538f0b77832adc8abf3357681d4de5ee93a202ebf19bd8b8'
   describe('data get URL', function () {
     this.timeout(20000)

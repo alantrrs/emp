@@ -6,6 +6,7 @@ var auth = require('./lib/auth')
 var run = require('./lib/run')
 var logger = require('./lib/logger')
 var read = require('read')
+const client = require('empirical-client')
 
 function version () {
   const emp_version = require('./package.json').version
@@ -58,13 +59,13 @@ function dataCLI (subcommand, source) {
 }
 
 function execute (args) {
-  switch (args[2]) {
+  switch (args._[2]) {
     case 'run':
       return run({
-        protocol: args[3],
-        code_path: args[4],
-        save: args[5] === '--save',
-        project: args[5] === '--save' ? args[args.indexOf('--save') + 1] : undefined
+        protocol: args._[3],
+        code_path: args._[4],
+        project: args.s || args.save,
+        head_sha: args.v || args.version
       }, logger)
     case 'configure':
       return captureDirectory().then(config.updateDir)
@@ -81,7 +82,7 @@ function execute (args) {
         console.log('Logged out successfully. Credentials cleared.')
       })
     case 'data':
-      return dataCLI(args[3], args[4])
+      return dataCLI(args._[3], args._[4])
     case 'version':
       return version()
     default:
@@ -90,7 +91,12 @@ function execute (args) {
 }
 
 config.load().then(function () {
-  return execute(process.argv)
+  var argv = require('minimist')(process.argv)
+  client.init({
+    host: process.env.EMPIRICAL_HOST,
+    auth: process.env.EMPIRICAL_AUTH
+  })
+  return execute(argv)
 }).then(function () {
   // Exit normally
   process.exit(0)

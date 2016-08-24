@@ -84,7 +84,7 @@ Then, you have two ways to execute your experiments:
 ### Manual mode
 You can run a specific version of the research code by doing the following:
 ```
-emp run --save --version <SHA> <owner/project/protocol>
+emp run --version <SHA> --save <owner/project> <protocol>
 ```
 Note that you cannot run arbitray commits. Usually when pushing to GitHub,
 the push contains multiple commits, but only the head commit is associated with the 
@@ -93,13 +93,13 @@ Therefore the given ``<SHA>`` must belong to a push's head commit.
 You can review the versions with their associated commits
 on [empiricalci.com/experiments](https://empiricalci.com/experiments).
 
-To simplify things, when **emp** is run from the code directory and no ``--version`` is given,
+To simplify things, when **emp** is run without a ``--version`` and a code path is given,
 **emp** will get the SHA of the current head commit of the code in order to retrieve the version.
 This means that you can run this command right after pushing your commits to GitHub
 without having to look for the commit ``<SHA>``, like this:
 
 1. Push your changes to GitHub: ``git push``  
-2. From the code directory, run your experiments: ``emp run --save <owner/project/protocol>``
+2. Run your experiments: ``emp run --save <owner/project> <protocol> </path/to/code>``
 
 ### Continuous integration mode (NOT IMPLEMENTED YET)
 **NOTE: This mode is still under development** 

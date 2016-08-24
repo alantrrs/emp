@@ -62,7 +62,7 @@ describe('emp run', function () {
     this.timeout(60000)
     exec('node index.js run hello-world node_modules/fixtures/standalone_project', function (err, stdout, stderr) {
       if (err) return done(err)
-      console.log(stdout)
+      // TODO: Add assertions
       done()
     })
   })
@@ -122,6 +122,25 @@ describe('emp login', function () {
           })
         })
       })
+    })
+  })
+})
+
+describe('emp run --save <owner/project>', function (done) {
+  it('runs and saves the experiment for the current version', function (done) {
+    this.timeout(60000)
+    exec('node index.js run --save empiricalci/mnist-sample mnist /tmp/mnist-test-project', function (err, stdout, stderr) {
+      if (err) return done(err)
+      // TODO: Add assertions
+      done()
+    })
+  })
+  it('runs and saves an experiment for a specific version of the code', function (done) {
+    this.timeout(60000)
+    exec('node index.js run -v 27e12070ca9618e1a66884995b6c872e2a15d886 -s empiricalci/mnist-sample mnist', function (err, stdout, stderr) {
+      if (err) return done(err)
+      // TODO: Add assertions
+      done()
     })
   })
 })
