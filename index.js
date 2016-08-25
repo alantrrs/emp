@@ -4,6 +4,7 @@ var usage = require('./lib/usage')
 var config = require('./lib/config')
 var auth = require('./lib/auth')
 var run = require('./lib/run')
+const replicate = require('./lib/replicate')
 var logger = require('./lib/logger')
 var read = require('read')
 const client = require('empirical-client')
@@ -60,6 +61,11 @@ function dataCLI (subcommand, source) {
 
 function execute (args) {
   switch (args._[2]) {
+    case 'replicate':
+      return replicate(args._[3], args._[4], logger)
+      .catch(function (err) {
+        logger.log(err.message)
+      })
     case 'run':
       return run({
         protocol: args._[3],

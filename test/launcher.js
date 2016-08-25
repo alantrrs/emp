@@ -22,6 +22,7 @@ function getContainer (image, cmd, cb) {
     var emp_info = containers.find(function (info) {
       return (info.Image === image && info.Command === cmd)
     })
+    assert(emp_info)
     // API 1.24 provides Mounts in the list
     // but API 1.22 doesn't so we need to inspect
     docker.getContainer(emp_info.Id).inspect(function (err, info) {
@@ -164,6 +165,53 @@ describe('./bin/run.sh', function () {
         return (volume.Source === 'mnist')
       })
       assert(!vol)
+    })
+  })
+
+  describe('emp replicate <experimentId> </code/path/>', function () {
+    var container
+    const somePath = '/tmp/what'
+    it('runs and exits successfully', function (done) {
+      this.timeout(60000)
+      const emp = spawn('./bin/run.sh', ['replicate', 'empiricalci/mnist-sample/mnist/mnistExperiment', somePath])
+      emp.stdout.once('data', function (data) {
+        debug(data.toString())
+        env(ENV_FILE)
+        debug('EMPIRICAL_DIR:', process.env.EMPIRICAL_DIR)
+        getContainer('empiricalci/emp:test', `node index.js replicate empiricalci/mnist-sample/mnist/mnistExperiment ${somePath}`, function (info) {
+          container = info
+        })
+      })
+      emp.on('close', function (code) {
+        if (code) return done(new Error('Failed'))
+        done()
+      })
+    })
+    it('should mount the given path', function () {
+      testMount(container, somePath)
+    })
+  })
+  describe('emp replicate <experimentId>', function () {
+    var container
+    const mountPath = path.join(process.cwd(), 'mnist')
+    it('runs and exits successfully', function (done) {
+      this.timeout(60000)
+      const emp = spawn('./bin/run.sh', ['replicate', 'empiricalci/mnist-sample/mnist/mnistExperiment'])
+      emp.stdout.once('data', function (data) {
+        debug(data.toString())
+        env(ENV_FILE)
+        debug('EMPIRICAL_DIR:', process.env.EMPIRICAL_DIR)
+        getContainer('empiricalci/emp:test', `node index.js replicate empiricalci/mnist-sample/mnist/mnistExperiment ${mountPath}`, function (info) {
+          container = info
+        })
+      })
+      emp.on('close', function (code) {
+        if (code) return done(new Error('Failed'))
+        done()
+      })
+    })
+    it('should mount the destination directory', function () {
+      testMount(container, mountPath)
     })
   })
 

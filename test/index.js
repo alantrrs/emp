@@ -9,11 +9,17 @@ var rm = require('rimraf')
 
 const ENV_FILE = path.join(process.env.HOME, '/.emp/emp.env')
 const code_dir = '/tmp/mnist-test-project'
+const tmpPath = '/tmp/some_dir'
+const tmpPath2 = path.join(process.cwd(), 'mnist')
 
 before(function (done) {
   process.env.EMPIRICAL_HOST = 'http://localhost:1337'
-  rm(code_dir, function () {
-    setup.backupConfig(ENV_FILE, done)
+  rm(tmpPath, function () {
+    rm(tmpPath2, function () {
+      rm(code_dir, function () {
+        setup.backupConfig(ENV_FILE, done)
+      })
+    })
   })
 })
 
@@ -248,6 +254,30 @@ describe('run()', function () {
   })
 })
 
+describe('replicate()', function () {
+  const replicate = require('../lib/replicate')
+  it('should download and run an experiment and save the code on the given path', function (done) {
+    this.timeout(60000)
+    replicate('empiricalci/mnist-sample/mnist/mnistExperiment', tmpPath, debugLogger).then(function () {
+      assert(fs.lstatSync(tmpPath).isDirectory())
+      // TODO: Assertions
+      done()
+    }).catch(done)
+  })
+  it('should save code on current directory if no code path is given', function (done) {
+    this.timeout(60000)
+    replicate('empiricalci/mnist-sample/mnist/mnistExperiment', undefined, debugLogger).then(function () {
+      assert(fs.lstatSync(tmpPath2).isDirectory())
+      // TODO: Assertions
+      done()
+    }).catch(done)
+  })
+})
+
 after(function (done) {
-  setup.resetConfig(ENV_FILE, done)
+  rm(tmpPath, function () {
+    rm(tmpPath2, function () {
+      setup.resetConfig(ENV_FILE, done)
+    })
+  })
 })

@@ -145,6 +145,27 @@ describe('emp run --save <owner/project>', function (done) {
   })
 })
 
+describe('emp replicate', function () {
+  it('replicates into the current directory', function (done) {
+    this.timeout(60000)
+    exec('node index.js replicate empiricalci/mnist-sample/mnist/mnistExperiment', function (err, stdout, stderr) {
+      console.log(stdout)
+      if (err) return done(err)
+      // TODO: Add assertions
+      done()
+    })
+  })
+  it('replicates into another directory', function (done) {
+    this.timeout(60000)
+    exec('node index.js replicate empiricalci/mnist-sample/mnist/mnistExperiment /tmp/random', function (err, stdout, stderr) {
+      console.log(stdout)
+      if (err) return done(err)
+      // TODO: Add assertions
+      done()
+    })
+  })
+})
+
 describe('emp logout', function () {
   it('clears credentials and logs confirmation', function (done) {
     exec('node index.js logout', function (err, stdout, stderr) {

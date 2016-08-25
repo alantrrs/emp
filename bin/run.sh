@@ -16,7 +16,7 @@ launch() {
 }
 
 absolute_path() {
-  if [ -e "$1" ]; then
+  if [ -e "$(dirname $1)" ]; then
     echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
   fi
 }
@@ -42,6 +42,23 @@ VOLUMES="$VOLUMES -v $EMPIRICAL_DIR/data:$EMPIRICAL_DIR/data"
 VOLUMES="$VOLUMES -v $EMPIRICAL_DIR/workspaces:$EMPIRICAL_DIR/workspaces"
 VOLUMES="$VOLUMES -v $EMP_CONF_FILE:$EMP_CONF_FILE"
 
+if [ "$1" = "replicate" ]; then
+  if [ -z $3 ]; then
+    CODE_DIR="$(pwd)/$(basename $(dirname $2))"
+    # Append absolute path to the end
+    set -- "${@}" "$CODE_DIR"
+  else
+    CODE_DIR=$(absolute_path $3)
+    # Replaces last arg by the new absolute path
+    set -- "${@:1:$(($#-1))}" "$CODE_DIR"
+  fi
+  if [ -z $CODE_DIR ]; then 
+    echo "Path $(dirname $3) doesn't exists"
+    exit 1
+  fi
+    VOLUMES="$VOLUMES -v $CODE_DIR:$CODE_DIR"
+fi
+
 if [ "$1" = "run" ]; then
   # Check if version is passed to run
   for key in "$@"; do
@@ -54,7 +71,7 @@ if [ "$1" = "run" ]; then
     CODE_DIR=$(absolute_path "${@: -1}")
     if [ -z $CODE_DIR ]; then 
       echo "Path doesn't exists"
-      exit 0
+      exit 1
     fi
     VOLUMES="$VOLUMES -v $CODE_DIR:$CODE_DIR:ro"
     # Replaces last arg by the new absolute path
@@ -66,7 +83,7 @@ if [ "$1" = "data" ] && [ "$2" = "hash" ]; then
   DATA_FILE=$(absolute_path $3)
   if [ -z $DATA_FILE ]; then 
     echo "Path doesn't exists"
-    exit 0
+    exit 1
   fi
   VOLUMES="$VOLUMES -v $DATA_FILE:$DATA_FILE"
 fi

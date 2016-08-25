@@ -101,8 +101,8 @@ without having to look for the commit ``<SHA>``, like this:
 1. Push your changes to GitHub: ``git push``  
 2. Run your experiments: ``emp run --save <owner/project> <protocol> </path/to/code>``
 
-### Continuous integration mode (NOT IMPLEMENTED YET)
-**NOTE: This mode is still under development** 
+### Continuous integration mode
+**NOTE: This mode hasn't been implemented yet** 
 
 In this mode you will be continuosly listening for updates in the GitHub repository.
 Every time that a push is made to the repo, the experiments will automatically run on your 
