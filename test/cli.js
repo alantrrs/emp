@@ -181,5 +181,8 @@ describe('emp logout', function () {
 })
 
 after(function (done) {
-  setup.resetConfig(ENV_FILE, done)
+  const rm = require('rimraf')
+  rm(path.join(process.cwd(), 'mnist'), function () {
+    setup.resetConfig(ENV_FILE, done)
+  })
 })
