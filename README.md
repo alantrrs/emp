@@ -35,15 +35,10 @@ This tool is written in JavaScript. **Node.js** is a JavaScript runtime required
 
 ## Install
 
-Once you have node.js installed in your computer you can install **emp** using ``npm``. This distribution is supported on Windows, Mac and Linux.
+**emp** is supported on Windows, Mac and Linux.
+Once you have node.js installed on your computer, you can install **emp** using ``npm``. 
 ```
 npm install -g empirical-cli
-```
-
-#### Docker container distribution
-This distribution only works on Mac and Linux. Use this installation method, only if you have any problems with the node distribution. You can use **emp** as a Docker container, just by installing the launcher:
-```
-curl -s https://raw.githubusercontent.com/empiricalci/emp/master/install.sh | sudo sh
 ```
 
 ## Get started
