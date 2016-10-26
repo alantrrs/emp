@@ -108,6 +108,15 @@ emp configure
 
 ## Notes
 
+### GPU Support
+
+GPU support is provided for Linux via the 
+[nvidia-docker-plugin](https://github.com/NVIDIA/nvidia-docker).
+Follow the instructions on the ["Quick start"](https://github.com/NVIDIA/nvidia-docker#quick-start) to install it.
+
+Currently Windows and MacOS are not supported since they
+rely on VMs to run Docker. See [this issue](https://github.com/NVIDIA/nvidia-docker/issues/101) for more information.
+
 ### About Docker on Windows
 
 If you're using the [Docker for Windows](https://docs.docker.com/docker-for-windows) version, as opposed to [Docker toolbox](https://docs.docker.com/toolbox/overview/) make sure of the following:
