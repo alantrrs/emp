@@ -260,7 +260,8 @@ describe('run()', function () {
       protocol: 'hello-world',
       code_path: 'test/fixtures/standalone_project'
     }, logger)
-    .then(function (report) {
+    .then(function (out) {
+      var report = out.report
       assert(fs.lstatSync(report.source.path).isDirectory())
       done()
     })
@@ -272,7 +273,8 @@ describe('run()', function () {
       protocol: 'mnist',
       code_path: `https://github.com/empiricalci/mnist-sample#${sha}`
     }, logger)
-    .then(function (report) {
+    .then(function (out) {
+      var report = out.report
       assert.equal(report.source.repo, 'https://github.com/empiricalci/mnist-sample')
       assert.equal(report.source.commit, sha)
       assert(fs.lstatSync(report.source.path).isDirectory())
@@ -286,7 +288,8 @@ describe('run()', function () {
       protocol: 'mnist',
       code_path: 'https://github.com/empiricalci/mnist-sample'
     }, logger)
-    .then(function (report) {
+    .then(function (out) {
+      var report = out.report
       assert.equal(report.source.repo, 'https://github.com/empiricalci/mnist-sample')
       assert(fs.lstatSync(report.source.path).isDirectory())
       done()
@@ -299,8 +302,8 @@ describe('replicate()', function () {
   const replicate = require('../lib/replicate')
   it('should replicate code on current directory', function (done) {
     this.timeout(60000)
-    replicate('empirical-bot/mnist/x/mnistExperiment', logger).then(function (report) {
-      assert(fs.lstatSync(report.source.path).isDirectory())
+    replicate('empirical-bot/mnist/x/mnistExperiment', logger).then(function (out) {
+      assert(fs.lstatSync(out.report.source.path).isDirectory())
       done()
     }).catch(done)
   })
