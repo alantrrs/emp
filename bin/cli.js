@@ -11,6 +11,7 @@ const read = require('read')
 const client = require('empirical-client')
 const push = require('../lib/push')
 const isExperimentId = require('../lib/is-experiment-id')
+const cache = require('../lib/cache')
 
 function version () {
   const emp_version = require('../package.json').version
@@ -47,6 +48,12 @@ function dataCLI (subcommand, source, dir) {
     case 'get':
       return data.get(source, dir).then(function (info) {
         logger.json(info)
+      }).catch(function (err) {
+        logger.error(err.message)
+      })
+    case 'cache':
+      return cache(source).then(function (out) {
+        logger.log(`Copied to ${out}`)
       }).catch(function (err) {
         logger.error(err.message)
       })
